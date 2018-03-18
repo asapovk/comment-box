@@ -1,0 +1,22 @@
+{
+  "comments": [
+    {
+      "id": "12345",
+      "text" : "First comment",
+      "author" : "Konstantin Astapov",
+      "replies" :["1232415", "1234534234"]
+    },
+    {
+      "id": "1232415",
+      "text" : "Second comment",
+      "author" : "Konstantin Astapov",
+      "replies" : []
+    },
+    {
+      "id": "1234534234",
+      "text" : "Third comment",
+      "author" : "Konstantin Astapov",
+      "replies" : []
+    }
+  ]
+}
