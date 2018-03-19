@@ -27,6 +27,6 @@ class CommentList extends Component{
 
 export default connect((state)=>(
   {
-    comments: mapToArr(state.commentReducer.entities),
+    comments: mapToArr(state.commentReducer.entities).reverse(),
     status: state.commentReducer.status
 }),{loadComments})(CommentList)

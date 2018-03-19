@@ -7,10 +7,15 @@ const LOAD_REJECTED = 'comment-box/LOAD_REJECTED'
 const LOAD_FULFILLED = 'comment-box/LOAD_FULFILLED'
 const ADD = 'comment-box/ADD'
 
+const REMOVE = 'comment-box/REMOVE'
+const REMOVE_REJECTED = 'comment-box/REMOVE_REJECTED'
+const REMOVE_FULFILLED = 'comment-box/REMOVE_FULFILLED'
+const DELETED = 'comment-box/DELETED'
+
 
 const CREATE = 'comment-box/CREATE'
 const UPDATE = 'comment-box/UPDATE'
-const REMOVE = 'comment-box/REMOVE'
+
 
 
 const reducerRecord = Record({
@@ -35,11 +40,14 @@ export default function reducer (state =  new reducerRecord(), action) {
     case LOAD_FULFILLED:
       return state.set('entities', arrToMap(payload.data.records, commentRecord))
     case ADD:
-      return state.update('entities', entities => entities.set(action.payload.value.data.id, new commentRecord({id: action.payload.value.data.id, user: action.payload.value.data.user, text: action.payload.value.data.text})))
+      return state.update('entities', entities => entities.set(payload.value.data.id, new commentRecord({id: payload.value.data.id,
+                                                                                                                user: payload.value.data.user,
+                                                                                                                text: payload.value.data.text})
+          ))
     case UPDATE:
       return state
-    case REMOVE:
-      return state
+    case DELETED:
+      return state.update('entities', entities => entities.delete(payload.value.data.id))
     default:
       return state
   }
@@ -70,8 +78,15 @@ export const createComment = ({text, user}) => {
 }
 
 
-export function deleteComment(commentId) {
-  return {type: REMOVE, payload: commentId
+export const deleteComment = (commentId) => {
+  return (dispatch) => {
+    const response = dispatch({type: REMOVE,
+      payload: axios.delete('api/comment/'+commentId)
+    })
+    response.then((commentId) => dispatch({
+        type: DELETED,
+        payload: commentId
+    }))
   }
 }
 
