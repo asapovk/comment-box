@@ -1,11 +1,18 @@
 import React, {Component} from 'react'
+import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {createComment} from '../../ducks/comments'
 
 class InputBox extends Component {
-  state = {
-    input: ''
+
+  static propTypes = {
+    startValue: PropTypes.string.isRequired
   }
+
+  state = {
+    input: this.props.startValue
+  }
+
   handleSubmit = () => {
     const text = this.state.input
     if (text) {

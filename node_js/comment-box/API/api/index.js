@@ -76,6 +76,20 @@ router.delete('/comment/:id', function (req,res,next){
    res.json({id: commentId});
 })
 
+
+router.put('/comment/', function (req, res, next) {
+  const comment = req.body;
+  const commentId = comment.id;
+  if(mock.comments[commentId]) {
+    mock.comments[commentId] = comment;
+    res.json({comment: comment});
+  }
+  else {
+    res.status(404).send('Comment not found');
+  }
+
+})
+
 router.post('/report', function (req, res) {
     res.json({})
 })

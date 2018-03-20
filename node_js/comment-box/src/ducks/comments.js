@@ -15,12 +15,15 @@ const DELETED = 'comment-box/DELETED'
 
 const CREATE = 'comment-box/CREATE'
 const UPDATE = 'comment-box/UPDATE'
+const EDIT = 'comment-box/EDIT'
+const INPUT = 'comment/box/INPUT'
 
 
 
 const reducerRecord = Record({
   entities: new OrderedMap({}),
-  status: null
+  status: null,
+  input: null
 })
 
 const commentRecord = Record({
@@ -42,12 +45,14 @@ export default function reducer (state =  new reducerRecord(), action) {
     case ADD:
       return state.update('entities', entities => entities.set(payload.value.data.id, new commentRecord({id: payload.value.data.id,
                                                                                                                 user: payload.value.data.user,
-                                                                                                                text: payload.value.data.text})
+                                                                                                              text: payload.value.data.text})
           ))
-    case UPDATE:
-      return state
+    case EDIT:
+      return state.update('entities', entities => entities.set(payload.value.data.comment.id, new commentRecord(payload.value.data.comment)))
     case DELETED:
       return state.update('entities', entities => entities.delete(payload.value.data.id))
+    case INPUT:
+      return state.update('input', input => payload)
     default:
       return state
   }
@@ -91,16 +96,36 @@ export const deleteComment = (commentId) => {
 }
 
 
-export function updateComment({commentId, text}) {
-  return {type: UPDATE, payload: {
-    commentId,
-    text
-  }}
+export const updateComment = (newComment) => {
+  const commentId = newComment.id
+  return (dispatch) => {
+    const response = dispatch({
+      type: UPDATE,
+      payload: axios.put('api/comment/'+commentId, newComment)
+    })
+    response.then((data)=>dispatch({
+      type: EDIT,
+      payload: data
+    }))
+  }
+
+}
+
+
+export const toggleInput = (commentId) => {
+  return {
+    type: INPUT,
+    payload: commentId
+  }
 }
 
 
 
-
 /*
-* Middlewares
+* Selectors
 */
+
+export const selectStatus = (commentId, statusId) => {
+  if(commentId === statusId) return true
+  return false
+}
