@@ -49,6 +49,7 @@ export default function reducer (state =  new reducerRecord(), action) {
           ))
     case EDIT:
       return state.update('entities', entities => entities.set(payload.value.data.comment.id, new commentRecord(payload.value.data.comment)))
+      .update('input', input => null)
     case DELETED:
       return state.update('entities', entities => entities.delete(payload.value.data.id))
     case INPUT:
@@ -96,12 +97,11 @@ export const deleteComment = (commentId) => {
 }
 
 
-export const updateComment = (newComment) => {
-  const commentId = newComment.id
+export const updateComment = (text, commentId) => {
   return (dispatch) => {
     const response = dispatch({
       type: UPDATE,
-      payload: axios.put('api/comment/'+commentId, newComment)
+      payload: axios.put('api/comment/', {text: text, id: commentId})
     })
     response.then((data)=>dispatch({
       type: EDIT,

@@ -1,12 +1,12 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import {connect} from 'react-redux'
-import {createComment} from '../../ducks/comments'
 
-class InputBox extends Component {
+
+
+export default class InputBox extends Component {
 
   static propTypes = {
-    startValue: PropTypes.string.isRequired
+    startValue: PropTypes.isRequired
   }
 
   state = {
@@ -15,8 +15,9 @@ class InputBox extends Component {
 
   handleSubmit = () => {
     const text = this.state.input
-    if (text) {
-      this.props.createComment({text, user: 'asapovk'})
+    const initialText = this.props.startValue
+    if (text && text !== initialText) {
+      this.props.onSubmitComment({text, user: 'asapovk'})
       this.setState({input: ''})
     }
   }
@@ -32,5 +33,3 @@ class InputBox extends Component {
     )
   }
 }
-
-export default connect(null,{createComment})(InputBox)

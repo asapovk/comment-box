@@ -72,16 +72,20 @@ router.post('/comment', function (req, res, next) {
 
 router.delete('/comment/:id', function (req,res,next){
    const commentId = req.params.id;
-   delete mocks.comments[commentId];
+   comment = mocks.comments.find((comment)=>comment.id === commentId);
+   const index = mocks.comments.indexOf(comment);
+   mocks.comments.splice(index,1);
    res.json({id: commentId});
 })
 
 
 router.put('/comment/', function (req, res, next) {
-  const comment = req.body;
-  const commentId = comment.id;
-  if(mock.comments[commentId]) {
-    mock.comments[commentId] = comment;
+  const {id, text} = req.body;
+  console.log(req.body);
+  let comment = mocks.comments.find(comment=>comment.id === id);
+  console.log(comment)
+  if(comment) {
+    comment.text = text;
     res.json({comment: comment});
   }
   else {
