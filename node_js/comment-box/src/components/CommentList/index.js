@@ -1,14 +1,9 @@
 import React, {Component} from 'react'
-import {connect} from 'react-redux'
 import Comment from '../Comment'
-import {loadComments} from '../../ducks/comments'
-import {mapToArr} from '../../helpers'
 
 
-class CommentList extends Component{
-  componentDidMount() {
-    this.props.loadComments()
-  }
+
+export default class CommentList extends Component{
   render() {
       const {status, comments} = this.props
       if(comments[0]) {
@@ -24,9 +19,3 @@ class CommentList extends Component{
 
     }
 }
-
-export default connect((state)=>(
-  {
-    comments: mapToArr(state.commentReducer.entities).reverse(),
-    status: state.commentReducer.status
-}),{loadComments})(CommentList)

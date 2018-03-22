@@ -38,6 +38,7 @@ router.post('/article', function (req, res, next) {
 
 router.get('/comment', function (req, res, next) {
     var aid = req.query.article;
+    /*
     if (aid) {
         var article = mocks.articles.find(function(article) {
             return article.id == aid
@@ -48,6 +49,12 @@ router.get('/comment', function (req, res, next) {
             })
         }))
     }
+    */
+    if (aid) {
+      var commentsOfArticle = mocks.comments.find((comment)=>comment.article == aid)
+      return res.json(commentsOfArticle || null)
+    }
+
 
     var limit = Number(req.query.limit) || mocks.comments.length,
         offset = Number(req.query.offset) || 0;

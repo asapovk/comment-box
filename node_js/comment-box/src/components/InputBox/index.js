@@ -17,7 +17,7 @@ export default class InputBox extends Component {
     const text = this.state.input
     const initialText = this.props.startValue
     if (text && text !== initialText) {
-      this.props.onSubmitComment({text, user: 'asapovk'})
+      this.props.onSubmitComment(text)
       this.setState({input: ''})
     }
   }

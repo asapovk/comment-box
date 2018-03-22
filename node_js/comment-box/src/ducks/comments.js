@@ -1,6 +1,6 @@
 import axios from 'axios'
 import {List, Record, OrderedMap} from 'immutable'
-import {arrToMap} from '../helpers'
+import {arrToMap, mapToArr} from '../helpers'
 
 const LOAD = 'comment-box/LOAD'
 const LOAD_REJECTED = 'comment-box/LOAD_REJECTED'
@@ -29,7 +29,8 @@ const reducerRecord = Record({
 const commentRecord = Record({
   id: null,
   user: null,
-  text: null
+  text: null,
+  article: null
 })
 
 
@@ -41,11 +42,12 @@ export default function reducer (state =  new reducerRecord(), action) {
     case LOAD_REJECTED:
       return state.update('status', status => 'rejected')
     case LOAD_FULFILLED:
-      return state.set('entities', arrToMap(payload.data.records, commentRecord))
+      return state.update('entities', entities=>entities.merge(arrToMap(payload.data.records, commentRecord)))
     case ADD:
       return state.update('entities', entities => entities.set(payload.value.data.id, new commentRecord({id: payload.value.data.id,
                                                                                                                 user: payload.value.data.user,
-                                                                                                              text: payload.value.data.text})
+                                                                                                              text: payload.value.data.text,
+                                                                                                            article: payload.value.data.article})
           ))
     case EDIT:
       return state.update('entities', entities => entities.set(payload.value.data.comment.id, new commentRecord(payload.value.data.comment)))
@@ -59,22 +61,27 @@ export default function reducer (state =  new reducerRecord(), action) {
   }
 }
 
-export const loadComments = () => {
+export const loadComments = (article=null) => {
+  let queryString = ''
+  if (article) {
+    queryString = '?article='+article
+  }
   return {
     type: LOAD,
-    payload: axios.get('/api/comment')
+    payload: axios.get('/api/comment'+queryString)
   }
 }
 
 
-export const createComment = ({text, user}) => {
+export const createComment = ({text, user, article}) => {
   return (dispatch) => {
     const response = dispatch({
         type: CREATE,
         payload: axios.post('/api/comment', {
           id: (Date.now() + Math.random()).toString(),
           user,
-          text})
+          text,
+          article})
     })
     response.then((data) => dispatch({
       type: ADD,
@@ -128,4 +135,14 @@ export const toggleInput = (commentId) => {
 export const selectStatus = (commentId, statusId) => {
   if(commentId === statusId) return true
   return false
+}
+
+export const commentSelector = (state, commentId = null) => {
+
+
+  const entities = state.commentReducer.entities.filter((comment)=>comment.article == commentId)
+  if (!commentId) return mapToArr(entities).reverse()
+  return  mapToArr(entities)
+
+
 }
