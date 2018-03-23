@@ -51,16 +51,16 @@ router.get('/comment', function (req, res, next) {
     }
     */
     if (aid) {
-      var commentsOfArticle = mocks.comments.find((comment)=>comment.article == aid)
-      return res.json(commentsOfArticle || null)
+      var commentsOfArticle = mocks.comments.filter((comment)=>comment.article == aid)
+      return res.json({records: commentsOfArticle} || null)
     }
+    var comments = mocks.comments.filter((comment) => !comment.hasOwnProperty('article') )
 
-
-    var limit = Number(req.query.limit) || mocks.comments.length,
+    var limit = Number(req.query.limit) || comments.length,
         offset = Number(req.query.offset) || 0;
     res.json({
-        total: mocks.comments.length,
-        records: mocks.comments.slice(offset, limit + offset)
+        total: comments.length,
+        records: comments.slice(offset, limit + offset)
     })
 });
 
