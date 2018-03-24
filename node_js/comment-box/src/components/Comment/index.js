@@ -7,14 +7,22 @@ import CommentList from '../CommentList'
 class Comment extends Component {
 
   state = {
+
     showReply: false,
-    showReplyInputBox: false
+    showReplyInputBox: false,
+    showCommentEditBox: false
+  }
+
+  componentWillReceiveProps(props) {
+    if(!props.status) this.setState({showReplyInputBox: false, showCommentEditBox: false})
+    console.log('STATE IS CHANGED!')
   }
 
   handleDeleteComment = () => {
     this.props.deleteComment(this.props.id)
   }
   toggleInputBox = () => {
+    this.setState({showCommentEditBox: !this.state.showCommentEditBox})
     if(!this.props.status) this.props.toggleInput(this.props.id)
     else this.props.toggleInput(null)
   }
@@ -24,17 +32,17 @@ class Comment extends Component {
   }
   toggleReply = () =>{
     this.setState({showReply: !this.state.showReply})
-    this.props.loadComments(this.props.id)
   }
   renderInputBox = (text) => {
-    if(this.props.status) {
+    if(this.state.showCommentEditBox) {
       return <InputBox startValue={this.props.text} onSubmitComment={this.handleUpdateComment}/>
     }
     else return <div>{text}</div>
   }
   toggleReplyBox = () => {
     this.setState({showReplyInputBox: !this.state.showReplyInputBox})
-    this.props.toggleInput(null)
+    if(!this.props.status) this.props.toggleInput(this.props.id)
+    else this.props.toggleInput(null)
   }
   renderReplyInputBox = () => {
     if(this.state.showReplyInputBox) return <InputBox startValue={null} onSubmitComment={this.handleReplyComment}/>
