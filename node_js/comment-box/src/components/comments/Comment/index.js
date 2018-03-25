@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {deleteComment, toggleInput, selectStatus, commentSelector, updateComment, loadComments, createComment} from '../../ducks/comments'
+import {deleteComment, toggleInput, selectStatus, commentSelector, updateComment, loadComments, createComment} from '../../../ducks/comments'
 import InputBox from '../InputBox'
 import CommentList from '../CommentList'
 

@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
 import CommentList from '../CommentList'
 import InputBox from '../InputBox'
-import {createComment, loadComments, commentSelector} from '../../ducks/comments'
-import {mapToArr} from '../../helpers'
+import {createComment, loadComments, commentSelector} from '../../../ducks/comments'
+import {mapToArr} from '../../../helpers'
 import {connect} from 'react-redux'
 
 class CommentBox extends Component{
