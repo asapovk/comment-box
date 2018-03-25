@@ -101,6 +101,31 @@ router.put('/comment/', function (req, res, next) {
 
 })
 
+router.post('/signin', function(req,res,next){
+  console.log(mocks.users);
+  console.log(req.body);
+  const {email, password} = req.body;
+  const user =  mocks.users.find((user)=>user.email== email)
+  if(user) {
+    res.json({user})
+  }
+  else res.status(401).send('Auth is failed')
+})
+
+router.post('/signup', function(req,res,next){
+  const {email, password} = req.body;
+  const user =  {
+    id: 'kjbefwkbef',
+    username: 'Konstantin',
+    email: req.body.email,
+    password: req.body.password
+  }
+  mocks.users.push(user);
+  res.json({user});
+})
+
+
+
 router.post('/report', function (req, res) {
     res.json({})
 })

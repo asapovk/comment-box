@@ -139,7 +139,17 @@ var articles = [
 
 ]
 
+var users = [
+  {
+  "id": "n1e2e1l2nd",
+  "username": "Konstantin",
+  "email": "asapovk@gmail.com",
+  "password": "123456"
+  }
+]
+
 module.exports = {
     comments: comments,
-    articles: articles
+    articles: articles,
+    users: users
 };
