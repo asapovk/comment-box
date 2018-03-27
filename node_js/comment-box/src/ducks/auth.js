@@ -36,7 +36,8 @@ export const signUp = (email, password) => {
 }
 
 const reducerRecord = Record({
-  user: null
+  user: null,
+  token: null
 })
 
 
@@ -45,9 +46,9 @@ export default function reducer (state = new reducerRecord(), action) {
   const {type, payload} = action
   switch (type) {
     case REGISTER:
-      return state.set('user', payload)
+      return state.set('user', payload.value.data.user).set('token', payload.value.data.token)
     case LOGIN:
-      return state.set('user', payload)
+      return state.set('user', payload.value.data.user).set('token', payload.value.data.token)
     default:
       return state
   }

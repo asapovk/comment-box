@@ -61,14 +61,15 @@ export default function reducer (state =  new reducerRecord(), action) {
   }
 }
 
-export const loadComments = (article=null) => {
+export const loadComments = (article, token) => {
+
   let queryString = ''
   if (article) {
     queryString = '?article='+article
   }
   return {
     type: LOAD,
-    payload: axios.get('/api/comment'+queryString)
+    payload: axios.get('/api/comment'+queryString, {headers: {'x-access-token': token}})
   }
 }
 

@@ -51,7 +51,7 @@ class Comment extends Component {
     if(comments && this.state.showReply) return <CommentList comments={this.props.comments}/>
   }
   handleReplyComment = (text) => {
-    this.props.createComment({user: 'asapovk', text, article: this.props.id})
+    this.props.createComment({user: this.props.user, text, article: this.props.id})
   }
   render() {
     const {user, text, comments} = this.props
@@ -69,4 +69,4 @@ class Comment extends Component {
     )
   }
 }
-export default connect((state, ownProps)=>({status: selectStatus(ownProps.id, state.commentReducer.input), comments: commentSelector(state, ownProps.id),  ...ownProps}), {deleteComment, toggleInput, updateComment, loadComments, createComment})(Comment)
+export default connect((state, ownProps)=>({status: selectStatus(ownProps.id, state.commentReducer.input), comments: commentSelector(state, ownProps.id), user: state.authReducer.user,  ...ownProps}), {deleteComment, toggleInput, updateComment, loadComments, createComment})(Comment)

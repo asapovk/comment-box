@@ -1,6 +1,8 @@
 var router = require('express').Router();
 var mocks = require('./mock');
 var assign = require('object-assign');
+var jwt = require('jsonwebtoken');
+
 
 router.get('/article', function (req, res, next) {
     var articles = mocks.articles.map(function (article) {
@@ -36,7 +38,18 @@ router.post('/article', function (req, res, next) {
     res.json(article)
 });
 
-router.get('/comment', function (req, res, next) {
+function checkToken (req,res,next) {
+  var token = req.headers['x-access-token'];
+  jwt.verify(token, 'secret', (err, decoced) =>{
+    if (err) {
+      return res.status(401).send('Invalid token')
+    }
+    next();
+  })
+}
+
+
+router.get('/comment', checkToken,function (req, res, next) {
     var aid = req.query.article;
     /*
     if (aid) {
@@ -64,7 +77,7 @@ router.get('/comment', function (req, res, next) {
     })
 });
 
-router.post('/comment', function (req, res, next) {
+router.post('/comment', checkToken,function (req, res, next) {
     var comment = {
         id : req.body.id,
         text : req.body.text,
@@ -77,7 +90,7 @@ router.post('/comment', function (req, res, next) {
 });
 
 
-router.delete('/comment/:id', function (req,res,next){
+router.delete('/comment/:id', checkToken,function (req,res,next){
    const commentId = req.params.id;
    comment = mocks.comments.find((comment)=>comment.id === commentId);
    const index = mocks.comments.indexOf(comment);
@@ -86,7 +99,7 @@ router.delete('/comment/:id', function (req,res,next){
 })
 
 
-router.put('/comment/', function (req, res, next) {
+router.put('/comment/', checkToken,function (req, res, next) {
   const {id, text} = req.body;
   console.log(req.body);
   let comment = mocks.comments.find(comment=>comment.id === id);
@@ -107,7 +120,8 @@ router.post('/signin', function(req,res,next){
   const {email, password} = req.body;
   const user =  mocks.users.find((user)=>user.email== email)
   if(user) {
-    res.json({user})
+    const token = jwt.sign({id: user.id}, 'secret', {expiresIn: 86400})
+    res.json({user, token})
   }
   else res.status(401).send('Auth is failed')
 })

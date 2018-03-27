@@ -7,10 +7,10 @@ import {connect} from 'react-redux'
 
 class CommentBox extends Component{
   componentDidMount() {
-    this.props.loadComments()
+    this.props.loadComments(null, this.props.token)
   }
   handleCreateComment = (text) =>
-  { this.props.createComment({user: 'asapovk', text, article: null})}
+  { this.props.createComment({user: this.props.user, text, article: null})}
   render() {
     return (
       <div>
@@ -22,5 +22,5 @@ class CommentBox extends Component{
 }
 
 export default connect ((state)=>({comments: commentSelector(state),
-                                  status: state.commentReducer.status}),
+                                  status: state.commentReducer.status, user: state.authReducer.user, token: state.authReducer.token}),
 {createComment, loadComments})(CommentBox)
