@@ -1,5 +1,6 @@
 import axios from 'axios'
 import {Record} from 'immutable'
+import {takeEvery, call, put} from 'redux-saga/effects'
 
 const SIGN_IN = 'auth/SIGN_IN'
 const LOGIN = 'auth/LOGIN'
@@ -53,4 +54,17 @@ export default function reducer (state = new reducerRecord(), action) {
       return state
   }
 
+}
+
+
+/*
+*Sagas
+*/
+
+export const authSaga = function* () {
+  yield takeEvery(SIGN_IN, signInSaga)
+}
+
+function* signInSaga () {
+  yield console.log('SIGN_IN SAGA WORKS!!!')
 }
