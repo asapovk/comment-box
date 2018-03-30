@@ -74,15 +74,15 @@ export const loadComments = (article, token) => {
 }
 
 
-export const createComment = ({text, user, article}) => {
+export const createComment = ({text, user, article, token}) => {
   return (dispatch) => {
     const response = dispatch({
         type: CREATE,
-        payload: axios.post('/api/comment', {
+        payload: axios.post('/api/comment' ,{
           id: (Date.now() + Math.random()).toString(),
           user,
           text,
-          article})
+          article}, {headers: {'x-access-token': token}})
     })
     response.then((data) => dispatch({
       type: ADD,
@@ -92,10 +92,10 @@ export const createComment = ({text, user, article}) => {
 }
 
 
-export const deleteComment = (commentId) => {
+export const deleteComment = (commentId, token) => {
   return (dispatch) => {
     const response = dispatch({type: REMOVE,
-      payload: axios.delete('api/comment/'+commentId)
+      payload: axios.delete('api/comment/'+commentId, {headers: {'x-access-token': token}})
     })
     response.then((commentId) => dispatch({
         type: DELETED,
@@ -105,11 +105,11 @@ export const deleteComment = (commentId) => {
 }
 
 
-export const updateComment = (text, commentId) => {
+export const updateComment = (text, commentId, token) => {
   return (dispatch) => {
     const response = dispatch({
       type: UPDATE,
-      payload: axios.put('api/comment/', {text: text, id: commentId})
+      payload: axios.put('api/comment/', {text: text, id: commentId}, {headers: {'x-access-token': token}})
     })
     response.then((data)=>dispatch({
       type: EDIT,

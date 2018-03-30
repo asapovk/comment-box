@@ -10,7 +10,7 @@ class CommentBox extends Component{
     this.props.loadComments(null, this.props.token)
   }
   handleCreateComment = (text) =>
-  { this.props.createComment({user: this.props.user, text, article: null})}
+  { this.props.createComment({user: this.props.postUser.username, text, article: null, token: this.props.token})}
   render() {
     return (
       <div>
@@ -22,5 +22,5 @@ class CommentBox extends Component{
 }
 
 export default connect ((state)=>({comments: commentSelector(state),
-                                  status: state.commentReducer.status, user: state.authReducer.user, token: state.authReducer.token}),
+                                  status: state.commentReducer.status, postUser: state.authReducer.user, token: state.authReducer.token}),
 {createComment, loadComments})(CommentBox)

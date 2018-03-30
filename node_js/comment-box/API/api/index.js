@@ -85,6 +85,7 @@ router.post('/comment', checkToken,function (req, res, next) {
         user: req.body.user,
         article : req.body.article
     };
+    console.log(comment)
     mocks.comments.push(comment);
     res.json(comment)
 });

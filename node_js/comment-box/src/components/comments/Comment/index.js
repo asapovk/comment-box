@@ -19,16 +19,18 @@ class Comment extends Component {
   }
 
   handleDeleteComment = () => {
-    this.props.deleteComment(this.props.id)
+    const {id, token} = this.props
+    this.props.deleteComment(id,token)
   }
   toggleInputBox = () => {
+    const {status, id} = this.props
     this.setState({showCommentEditBox: !this.state.showCommentEditBox})
-    if(!this.props.status) this.props.toggleInput(this.props.id)
+    if(!status) this.props.toggleInput(id)
     else this.props.toggleInput(null)
   }
   handleUpdateComment = (text) => {
-    const commentId = this.props.id
-    this.props.updateComment(text, commentId)
+    const {id, token} = this.props
+    this.props.updateComment(text, id, token)
   }
   toggleReply = () =>{
     this.setState({showReply: !this.state.showReply})
@@ -40,8 +42,9 @@ class Comment extends Component {
     else return <div>{text}</div>
   }
   toggleReplyBox = () => {
+    const {status, id} = this.props
     this.setState({showReplyInputBox: !this.state.showReplyInputBox})
-    if(!this.props.status) this.props.toggleInput(this.props.id)
+    if(!status) this.props.toggleInput(id)
     else this.props.toggleInput(null)
   }
   renderReplyInputBox = () => {
@@ -51,7 +54,9 @@ class Comment extends Component {
     if(comments && this.state.showReply) return <CommentList comments={this.props.comments}/>
   }
   handleReplyComment = (text) => {
-    this.props.createComment({user: this.props.user, text, article: this.props.id})
+    const {postUser, id, token} = this.props
+    this.props.createComment({user: postUser.username, text, article: id, token})
+    this.setState({showReplyInputBox: false, showReply: true})
   }
   render() {
     const {user, text, comments} = this.props
@@ -69,4 +74,8 @@ class Comment extends Component {
     )
   }
 }
-export default connect((state, ownProps)=>({status: selectStatus(ownProps.id, state.commentReducer.input), comments: commentSelector(state, ownProps.id), user: state.authReducer.user,  ...ownProps}), {deleteComment, toggleInput, updateComment, loadComments, createComment})(Comment)
+export default connect((state, ownProps)=>({status: selectStatus(ownProps.id, state.commentReducer.input),
+                                            comments: commentSelector(state, ownProps.id), 
+                                            postUser: state.authReducer.user,
+                                            token: state.authReducer.token,  ...ownProps}),
+    {deleteComment, toggleInput, updateComment, loadComments, createComment})(Comment)
