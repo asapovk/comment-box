@@ -1,6 +1,6 @@
 import axios from 'axios'
 import {Record} from 'immutable'
-import {takeEvery, call, put} from 'redux-saga/effects'
+import {takeEvery, call, put, all} from 'redux-saga/effects'
 
 const SIGN_IN = 'auth/SIGN_IN'
 const LOGIN = 'auth/LOGIN'
@@ -13,12 +13,11 @@ export const signIn = (email, password) => {
       const response = dispatch({
       type: SIGN_IN,
       payload: axios.post('/api/signin', {email, password})})
-      response.then((user)=>{
+      response.then((data)=>{
         dispatch({type: LOGIN,
-            payload: user
+            payload: data
         })
       })
-
   }
 }
 
@@ -27,9 +26,9 @@ export const signUp = (email, password) => {
       const response = dispatch({
       type: SIGN_UP,
       payload: axios.post('/api/signup', {email, password})})
-      response.then((user)=>{
+      response.then((data)=>{
         dispatch({type: REGISTER,
-            payload: user
+            payload: data
         })
       })
 
@@ -55,16 +54,37 @@ export default function reducer (state = new reducerRecord(), action) {
   }
 
 }
-
-
+/*
+2Hv0J_c,Jd!
+*/
 /*
 *Sagas
 */
 
-export const authSaga = function* () {
-  yield takeEvery(SIGN_IN, signInSaga)
+const saveTokenToStorage = (token) => {
+  window.localStorage.setItem('token', token)
+}
+const getTokenFromStorage = () => {
+  return window.localStorage.getItem('token')
 }
 
-function* signInSaga () {
-  yield console.log('SIGN_IN SAGA WORKS!!!')
+export const authSaga = function* () {
+  yield all([takeEvery(LOGIN, signInSaga),
+            takeEvery('@@router/LOCATION_CHANGE', setUserSaga)
+  ])
+}
+
+const signInSaga = function* (action) {
+  const token = action.payload.value.data.token
+  yield call(saveTokenToStorage, token)
+}
+
+const setUserSaga = function* () {
+  const token = yield call(getTokenFromStorage)
+  const mockUser = {
+    email: 'mail@example.com',
+    username: 'asapovk',
+    password: '123456'
+  }
+  yield put({type: LOGIN, payload: {value: {data: {token: token, user: mockUser}}}})
 }
