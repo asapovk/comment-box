@@ -65,10 +65,15 @@ router.get('/comment', checkToken,function (req, res, next) {
     */
     if (aid) {
       var commentsOfArticle = mocks.comments.filter((comment)=>comment.article == aid)
+      console.log(commentsOfArticle);
+
       return res.json({records: commentsOfArticle} || null)
     }
-    var comments = mocks.comments.filter((comment) => !comment.hasOwnProperty('article') )
+    //var comments = mocks.comments.filter((comment) => !comment.hasOwnProperty('article') || comment.article == null )
+    //console.log(comments.length);
+    //console.log(mocks.comments)
 
+    var comments = mocks.comments;
     var limit = Number(req.query.limit) || comments.length,
         offset = Number(req.query.offset) || 0;
     res.json({
@@ -85,8 +90,9 @@ router.post('/comment', checkToken,function (req, res, next) {
         user: req.body.user,
         article : req.body.article
     };
-    console.log(comment)
+  //  console.log(comment)
     mocks.comments.push(comment);
+    console.log(mocks.comments.length)
     res.json(comment)
 });
 
@@ -102,7 +108,7 @@ router.delete('/comment/:id', checkToken,function (req,res,next){
 
 router.put('/comment/', checkToken,function (req, res, next) {
   const {id, text} = req.body;
-  console.log(req.body);
+  //console.log(req.body);
   let comment = mocks.comments.find(comment=>comment.id === id);
   console.log(comment)
   if(comment) {

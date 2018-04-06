@@ -144,6 +144,12 @@ export const commentSelector = (state, commentId = null) => {
   const entities = state.commentReducer.entities.filter((comment)=>comment.article == commentId)
   if (!commentId) return mapToArr(entities).reverse()
   return  mapToArr(entities)
+}
 
 
+export const selectAccessStatus = (state, id) => {
+  const comment = state.commentReducer.entities.find((comment)=> comment.id == id)
+  const authUser = state.authReducer.user
+  if (comment.user ==  authUser.username) return true
+  return false
 }

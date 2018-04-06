@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {deleteComment, toggleInput, selectStatus, commentSelector, updateComment, loadComments, createComment} from '../../../ducks/comments'
+import {deleteComment, toggleInput, selectStatus, selectAccessStatus,  commentSelector, updateComment, loadComments, createComment} from '../../../ducks/comments'
 import InputBox from '../InputBox'
 import CommentList from '../CommentList'
 
@@ -58,15 +58,32 @@ class Comment extends Component {
     this.props.createComment({user: postUser.username, text, article: id, token})
     this.setState({showReplyInputBox: false, showReply: true})
   }
+
+  renderShowReplyButton = () => {
+    const {comments} = this.props
+    if (comments.length > 0) {
+      return (<button onClick={this.toggleReply}>Show reply</button>)
+    }
+  }
+  renderEditDeleteButtons = () => {
+    const {accessStatus} = this.props
+    if(accessStatus) {
+      return (
+        <div>
+          <button onClick={this.handleDeleteComment}>Delete</button>
+          <button onClick={this.toggleInputBox}>Edit</button>
+        </div>
+      )
+    }
+  }
   render() {
     const {user, text, comments} = this.props
     return (
       <div>
         <h2>{user}</h2>
         {this.renderInputBox(text)}
-        <button onClick={this.handleDeleteComment}>Delete</button>
-        <button onClick={this.toggleInputBox}>Edit</button>
-        <button onClick={this.toggleReply}>Show reply</button>
+        {this.renderEditDeleteButtons()}
+        {this.renderShowReplyButton()}
         <button onClick={this.toggleReplyBox}>Reply</button>
         {this.renderReplyInputBox()}
         {this.renderReplyComments(comments)}
@@ -75,7 +92,8 @@ class Comment extends Component {
   }
 }
 export default connect((state, ownProps)=>({status: selectStatus(ownProps.id, state.commentReducer.input),
-                                            comments: commentSelector(state, ownProps.id), 
+                                            accessStatus: selectAccessStatus(state, ownProps.id),
+                                            comments: commentSelector(state, ownProps.id),
                                             postUser: state.authReducer.user,
                                             token: state.authReducer.token,  ...ownProps}),
     {deleteComment, toggleInput, updateComment, loadComments, createComment})(Comment)
